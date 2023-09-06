@@ -1,7 +1,6 @@
 # fuzzymerge_parallel
 
-Merge two pandas dataframes by using a function to calculate the edit distance (Levenshtein Distance) using multiprocessing or Dask to do it in parallel.
-
+Merge two pandas dataframes by using a function to calculate the edit distance (Levenshtein Distance) using multiprocessing for parallelization on a single node or Dask for distributed computation across multiple nodes.
 
 
 
@@ -14,7 +13,7 @@ Merge two pandas dataframes by using a function to calculate the edit distance (
 
 ## Installation
 
-To download and install the FuzzyMergeParallel Python package from GitHub, you can follow these improved instructions:
+To download and install the fuzzymerge_parallel Python package from GitHub, you can follow these improved instructions:
 
 To install FuzzyMergeParallel via pip from its GitHub repository, follow these steps:
 
@@ -25,7 +24,7 @@ To install FuzzyMergeParallel via pip from its GitHub repository, follow these s
     
 2. Navigate to the Package Directory: Open a terminal or command prompt and change your current directory to the downloaded package folder:
     ```bash
-    cd FuzzyMergeParallel
+    cd fuzzymerge_parallel
     ```
 
 3. Install the Package: Finally, use pip to install the package in "editable" mode (with the -e flag) to allow for development and updates:
@@ -117,9 +116,6 @@ result = fuzzy_merger.merge()
 ```
 
 
-
-
-
 ## Contributing
 
 Contributions are welcome! If you encounter any issues, have suggestions, or want to contribute improvements, please submit a pull request or open an issue on the GitHub repository.
@@ -129,6 +125,9 @@ Contributions are welcome! If you encounter any issues, have suggestions, or wan
 
 - Oscar J. Castro Lopez (oscar.castro@uni.lu)
   - Parallel Computing & Optimisation Group (PCOG) - **University of Luxembourg**
+
+
+This package is based on the levenpandas package (https://github.com/fangzhou-xie/levenpandas).
 
 ## License
 

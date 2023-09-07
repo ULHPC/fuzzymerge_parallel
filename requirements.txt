@@ -1,0 +1,8 @@
+dask==2023.9.0
+distributed==2023.9.0
+nltk==3.8.1
+pandas==2.1.0
+psutil==5.9.5
+pytest==7.4.1
+setuptools==68.1.2
+tqdm==4.66.1

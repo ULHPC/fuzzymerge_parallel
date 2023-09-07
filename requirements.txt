@@ -1,5 +1,7 @@
+click== 8.1.7
 dask==2023.9.0
 distributed==2023.9.0
+Levenshtein==0.21.1
 nltk==3.8.1
 pandas==2.1.0
 psutil==5.9.5

@@ -7,3 +7,4 @@ with:
   custom-arguments: '-q'
   click-to-expand: true
   report-title: 'Test Report'
+  on: push

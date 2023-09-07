@@ -4,43 +4,49 @@
 
 import pytest
 from click.testing import CliRunner
-from nltk.corpus import movie_reviews
-import nltk
+# from nltk.corpus import movie_reviews
+# import nltk
 import pandas as pd
 from fuzzymerge_parallel.FuzzyMergeParallel import FuzzyMergeParallel
 from fuzzymerge_parallel import cli
 
 
+def dask_is_installed() -> bool:
+    """Checks if dask is installed. This is an auxiliary function to skip dask tests if it's not installed.
 
-@pytest.fixture(scope="module")
-def dataset(rows=5000):
-    """Load nltk dataset
-
-    Args:
-        rows (int, optional): Row numbers. Defaults to 5000.
-
-    Yields:
-        pd.Dataframe: two dataframes.
+    Returns:
+        bool: True if dask was imported succesfully, Otherwise False.
     """
     try:
-        # Check if the movie_reviews corpus is already downloaded
-        nltk.data.find('corpora/movie_reviews.zip')
-    except LookupError:
-        # Download the movie_reviews corpus
-        nltk.download('movie_reviews')
-    # Get the list of words from the movie_reviews corpus
-    words = movie_reviews.words()
+        import dask
+        library_installed = True
+    except ImportError:
+        library_installed = False
+    return library_installed
 
-    # Split the list of words into two halves
-    half_size = len(words) // 2
-    first_half = words[:half_size]
-    second_half = words[half_size:]
-    # Create DataFrames from the word lists
-    df1 = pd.DataFrame({'words_left': first_half})
-    df2 = pd.DataFrame({'words_right': second_half})
-    df1 = df1[0:rows]
-    df2 = df2[0:rows]
-    yield df1, df2
+
+pytest.mark.dask = pytest.mark.skipif(
+    (not dask_is_installed()),
+    reason="Test requires 'dask' extra to be installed."
+)
+
+
+@pytest.fixture(scope="module")
+def dataset():
+    """Loads a preprocessed subset of the NLTK corpora/movie_reviews dataset.
+
+    This function loads a curated subset of 5000 rows from the corpora/movie_reviews dataset available in the NLTK package. The original dataset, which contains movie-review text data, was processed to create this subset for testing purposes.
+
+    Dataset Source: [NLTK - Movie Reviews Corpus](http://www.cs.cornell.edu/people/pabo/movie-review-data/)
+
+    The subset dataset has already been carefully filtered and tested with levenshtein distance for each pair, resulting in 600 matching records. Therefore, the expected shape of the yielded dataframes is (600, 2).
+
+    Yields:
+        pd.DataFrame: Two dataframes, each containing a list of words from preprocessed movie-review data.
+    """
+    words_left = pd.read_csv('tests/words_left.zip')
+    words_right = pd.read_csv('tests/words_right.zip')
+    yield words_left, words_right
 
 
 def test_command_line_interface():
@@ -55,7 +61,7 @@ def test_command_line_interface():
 
 
 def test_sequential(dataset):
-    """Test sequential execution of FuzzyMergeParallel.
+    """Basic sequential text execution of FuzzyMergeParallel.
     """
     left_df, right_df = dataset
     fm_seq = FuzzyMergeParallel(
@@ -68,8 +74,8 @@ def test_sequential(dataset):
     assert result.shape == (600, 2)
 
 
-def test_multiprocessing(dataset):
-    """Test multiprocessing execution of FuzzyMergeParallel.
+def test_basic_multiprocessing(dataset):
+    """Basic multiprocessing test execution of FuzzyMergeParallel.
     """
     left_df, right_df = dataset
     fm_multi = FuzzyMergeParallel(
@@ -77,17 +83,18 @@ def test_multiprocessing(dataset):
     # Set parameters
     fm_multi.set_parameter('how', 'inner')
     # Set parameters for multiprocessing
-    fm_multi.set_parameter('parallel', True)
-    fm_multi.set_parameter('n_threads', 0)  # All available cores
+    fm_multi.set_parameter('n_threads', 'all')  # All available cores
     # Run the merge multiprocessing
     result = fm_multi.merge()
     assert result.shape == (600, 2)
 
 
-def get_local_client():
-    """Create a dask client with local cluster.
+@pytest.mark.dask
+def test_basic_dask(dataset):
+    """Basic dask test execution of FuzzyMergeParallel.
     """
     from dask.distributed import Client, LocalCluster
+    left_df, right_df = dataset
     # Create a local Dask cluster
     cluster = LocalCluster()
     # Create a Dask client to connect to the cluster
@@ -95,14 +102,6 @@ def get_local_client():
     # Get the total number of cores available in the cluster
     total_cores = sum(client.ncores().values())
     print("total cores ", total_cores)
-    return client
-
-
-def test_dask(dataset):
-    """Test dask execution of FuzzyMergeParallel.
-    """
-    left_df, right_df = dataset
-    client = get_local_client()
     fm_dask = FuzzyMergeParallel(
         left_df, right_df, left_on='words_left', right_on='words_right')
     # Set parameters

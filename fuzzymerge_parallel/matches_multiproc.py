@@ -70,11 +70,11 @@ def _get_matches_row_list(right_shape: tuple, arr_type: Union[type, str], thresh
     return combinations.astype(int)
 
 
-def match_by_left_multiproc(left_batches: list, right_np: np.ndarray, threshold: float, n_threads: int, ratio_function: Callable, hide_progress: bool = False) -> np.ndarray:
+def match_by_left_multiproc(left_batches: list, right_np: np.ndarray, threshold: float, n_threads: [int, str], ratio_function: Callable, hide_progress: bool = False) -> np.ndarray:
     """Parallel implementation of the function :func:`_match_by_left` with multiprocessing."""
-    # Determine the number of threads to use
-    if n_threads <= 0:
-        n_threads = mp.cpu_count() + n_threads
+    # Determine the number of threads to use if not a number or if lower than 1 is equal to available cores
+    if n_threads == 'all' or (not isinstance(n_threads, int)) or (n_threads < 1):
+        n_threads = mp.cpu_count()
     # Create shared memory data
     shm = _create_shared_array(right_np)
     matched_batch_list = []

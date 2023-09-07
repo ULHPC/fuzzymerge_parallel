@@ -2,8 +2,13 @@
 
 FuzzyMergeParallel.
 
-Package for performing fuzzy merging of two dataframes based on a string column, using a distance function such as Levenshtein. 
-It can leverage multiprocessing or dask to enhance the execution speed.
+Package for performing fuzzy merging of two dataframes based on a string column, using a distance function such as Levenshtein.
+
+FuzzyMergeParallel offers two modes for faster execution:
+
+1. Multiprocessing mode: This mode runs on a single machine using multiple CPU cores. It's ideal for local processing tasks, utilizing Numpy and Python's multiprocessing libraries to speed things up.
+2. Dask mode: In this mode, FuzzyMergeparallel utilizes a Dask client, which can be configured for single or multi-node setups. Multi-node clients distribute computations across clusters of machines, making it suitable for heavy-duty processing.
+
 
 Author: Oscar J. CASTRO-LOPEZ
 Date: 2023-06-19
@@ -24,7 +29,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 from fuzzymerge_parallel.aux import suggest_batch_number
-from fuzzymerge_parallel.matches_dask import match_by_left_dask
+
 from fuzzymerge_parallel.matches_multiproc import match_by_left_multiproc
 from Levenshtein import ratio as levenshtein_ratio
 from tqdm import tqdm
@@ -48,15 +53,15 @@ class FuzzyMergeParallel:
     fuzzy_merger = FuzzyMergeParallel(left_df, right_df, left_on='left_column_name', right_on='right_column_name')
     # Set parameters
     fuzzy_merger.set_parameter('how', 'inner')
+    fuzzy_merger.set_parameter('parallel', False)
     # Run the merge sequentially
     result = fuzzy_merger.merge()
 
     # Set parameters for multiprocessing
-    fuzzy_merger.set_parameter('parallel', True)
+    
     fuzzy_merger.set_parameter('n_threads', 64)
     # Run the merge multiprocessing
     result = fuzzy_merger.merge()
-
     # Set parameters for dask
     ## Create a dask client
     from dask.distributed import Client
@@ -97,9 +102,9 @@ class FuzzyMergeParallel:
             right_index: bool
                 Whether to use the right DataFrame's index as merge key(s). Default is False.
             parallel: bool
-                Whether to perform the merge operation in parallel. Default is False.
+                Whether to perform the merge operation in parallel. Default is True.
             n_threads: int
-                The number of threads to use for parallel execution. Default is 0.
+                The number of threads to use for parallel execution. Default is 'all' which runs one thread per available core.
             hide_progress: bool
                 Whether to display a progress bar during the merge operation. Default is False.
             num_batches: int
@@ -120,8 +125,8 @@ class FuzzyMergeParallel:
         self.on = None
         self.left_index = False
         self.right_index = False
-        self.parallel = False
-        self.n_threads = 0
+        self.parallel = True
+        self.n_threads = 'all'
         self.hide_progress = False
         self.ratio_function = levenshtein_ratio
         self.dask_client = None
@@ -258,8 +263,15 @@ class FuzzyMergeParallel:
         right_np = right_tmp[['index', self.right_on]].to_numpy()
 
         if self.parallel and self.dask_client is not None:  # Dask
-            matched = match_by_left_dask(left_tmp, right_np, self.left_on, self.threshold, self.dask_client, self.ratio_function, self.hide_progress)
-            return matched
+            try:
+                from fuzzymerge_parallel.matches_dask import match_by_left_dask
+            except ImportError:
+                import warnings
+                warnings.warn(
+                    "Dask dependencies not found, Please install 'fuzzymerge_parallel[dask]' to use this command.")
+            else:
+                matched = match_by_left_dask(left_tmp, right_np, self.left_on, self.threshold, self.dask_client, self.ratio_function, self.hide_progress)
+                return matched
 
         # Convert left dataframe to Numpy
         left_np = left_tmp[['index', self.left_on]].to_numpy()

@@ -10,10 +10,10 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0', 'dask[distributed]>=2023.5.0', 'Levenshtein>=0.21.0', 'nltk>=3.8.1',
-                'numpy>=1.23.5', 'pandas>=1.5.3', 'tqdm>=4.65.0', 'psutil==5.9.5', 'pytest>=7.4.1']
+requirements = ['Click>=7.0', 'Levenshtein>=0.21.0', 'nltk>=3.8.1',
+                'numpy>=1.23.5', 'pandas>=1.5.3', 'tqdm>=4.65.0', 'psutil==5.9.5']
 
-test_requirements = ['pytest>=3', ]
+test_requirements = ['pytest>=7.4.1', ]
 
 setup(
     author="Oscar J. Castro-Lopez",
@@ -28,6 +28,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     description="FuzzyMergeParallel is a Python package that enables efficient fuzzy merging of two dataframes based on string columns. With FuzzyMergeParallel, users can easily merge datasets, benefitting from enhanced performance through parallel computing with multiprocessing and Dask.",
     entry_points={
@@ -36,6 +39,9 @@ setup(
         ],
     },
     install_requires=requirements,
+    extras_require={
+        "dask": ["dask[distributed]>=2023.5.0"],
+    },
     license="MIT license",
     long_description=readme + '\n\n' + history,
     include_package_data=True,
@@ -45,7 +51,7 @@ setup(
         include=['fuzzymerge_parallel', 'fuzzymerge_parallel.*']),
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/audreyr/fuzzymerge_parallel',
+    url='https://github.com/ULHPC/fuzzymerge_parallel',
     version='0.1.0',
     zip_safe=False,
 )

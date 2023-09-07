@@ -1,5 +1,7 @@
 name: Run pytest
 uses: fuzzymerge_parallel/tests
+on: 
+  push
 with:
   verbose: true
   emoji: true
@@ -7,4 +9,4 @@ with:
   custom-arguments: '-q'
   click-to-expand: true
   report-title: 'Test Report'
-  on: push
+

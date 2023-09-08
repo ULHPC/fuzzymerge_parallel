@@ -1,5 +1,7 @@
 # fuzzymerge_parallel
 
+[![Python package](https://github.com/ULHPC/fuzzymerge_parallel/actions/workflows/python-package.yml/badge.svg)](https://github.com/ULHPC/fuzzymerge_parallel/actions/workflows/python-package.yml)
+
 Merge two pandas dataframes by using a function to calculate the edit distance (Levenshtein Distance) using multiprocessing for parallelization on a single node or Dask for distributed computation across multiple nodes.
 
 **Efficient Matching and Merging**
@@ -26,8 +28,11 @@ This mode runs on a single machine and it is able to use multi-CPU cores. This m
 
 ### 2. Dask mode
 
-In this mode, fuzzymerge_parallel utilizes a Dask client, which can be configured for single or multi-node setups. To leverage the dask mode it is suggested to use it multiple nodes. Multi-node dask clients distribute computations across clusters of machines, making it suitable for heavy-duty processing. Using dask mode offers numerous benefits, automating tasks that would otherwise require manual intervention, such as enhancing performance, expanding scalability, ensuring fault tolerance, optimizing resource utilization, and enabling parallelism.
+In this mode, fuzzymerge_parallel utilizes a Dask client, which can be configured for single or multi-node setups. To leverage the dask mode it is suggested to use it with multiple nodes. Multi-node dask clients distribute computations across clusters of machines, making it suitable for heavy-duty processing. Using dask mode offers numerous benefits, automating tasks that would otherwise require manual intervention, such as enhancing performance, expanding scalability, ensuring fault tolerance, optimizing resource utilization, and enabling parallelism.
 
+<span style="color:red">**Important remarks:**</span> When using the package on a single node, it is recommended to opt for the multiprocessing mode. This choice is driven by the fact that multiprocessing generally offers faster execution times compared to Dask on a single node. Dask introduces certain overheads, including data copying, fault tolerance mechanisms, and resource management, which may not be as beneficial in single-node scenarios. Therefore, it is strongly advisable to leverage Dask when deploying the package in a multi-node cluster.
+
+ 
 ### Features
 
 - Performs fuzzy merging of dataframes based on string columns

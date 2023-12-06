@@ -14,7 +14,11 @@ import pandas as pd
 import numpy as np
 
 
-def get_combinations_per_row(left_row: pd.Series, right_np: np.ndarray, left_on: str, threshold: float, ratio_function: Callable) -> Union[None, np.ndarray]:
+def get_combinations_per_row(left_row: pd.Series,
+                             right_np: np.ndarray,
+                             left_on: str,
+                             threshold: float,
+                             ratio_function: Callable) -> Union[None, np.ndarray]:
     """Get matches between a row of left_df and all rows from right_df.
 
     Args:
@@ -45,7 +49,11 @@ def get_combinations_per_row(left_row: pd.Series, right_np: np.ndarray, left_on:
     return combinations
 
 
-def get_combinations_per_partition(left_df: pd.DataFrame, right_np: np.ndarray, left_on: str, threshold: float, ratio_function: Callable) -> np.ndarray:
+def get_combinations_per_partition(left_df: pd.DataFrame,
+                                   right_np: np.ndarray,
+                                   left_on: str,
+                                   threshold: float,
+                                   ratio_function: Callable) -> np.ndarray:
     """Function to process partitions of a dask dataframe. Calls apply to each row of left_df to obtain the matches.
 
     Args:
@@ -92,7 +100,13 @@ def get_unique_nodes_count(dask_client: Client) -> int:
     return num_nodes
 
 
-def match_by_left_dask(left_tmp: pd.DataFrame, right_np: np.ndarray, left_on: str, threshold: float, dask_client: Client, ratio_function: Callable, hide_progress: bool = False) -> pd.DataFrame:
+def match_by_left_dask(left_tmp: pd.DataFrame,
+                       right_np: np.ndarray,
+                       left_on: str,
+                       threshold: float,
+                       dask_client: Client,
+                       ratio_function: Callable,
+                       hide_progress: bool = False) -> pd.DataFrame:
     """Parallel implementation of the function :func:`_match_by_left` with Dask.
 
     Args:

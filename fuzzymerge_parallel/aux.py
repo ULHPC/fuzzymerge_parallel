@@ -7,6 +7,7 @@ Date: 2023-06-19
 
 """
 import psutil
+import pandas as pd
 
 
 def _conditional_print(msg: str, enabled: bool = False):
@@ -14,7 +15,11 @@ def _conditional_print(msg: str, enabled: bool = False):
         print(msg)
 
 
-def suggest_batch_number(df1, df2, scenario: int = 5, factor: float = 0.001, print_enabled: bool = False) -> int:
+def suggest_batch_number(df1: pd.DataFrame,
+                         df2: pd.DataFrame,
+                         scenario: int = 5,
+                         factor: float = 0.001,
+                         print_enabled: bool = False) -> int:
     """Compute how much memory would be required to execute FuzzyMergeParallel between two dataframes.
 
     Generates scenarios and returns how many rows per batch fit into memory to execute FuzzyMergeParallel.

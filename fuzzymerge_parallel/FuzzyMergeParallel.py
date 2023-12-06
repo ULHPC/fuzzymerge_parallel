@@ -306,7 +306,9 @@ class FuzzyMergeParallel:
                 self.ratio_function)(left_np[i], right_np)
         return ratio_matrix
 
-    def _match_by_left_sequential(self, left_batches: list, right_np: np.ndarray) -> pd.DataFrame:
+    def _match_by_left_sequential(self,
+                                  left_batches: list,
+                                  right_np: np.ndarray) -> pd.DataFrame:
         """Sequential implementation of the function :func:`_match_by_left`."""
         # Iterate over each row pair and get Levenshtein ratio
         # for left_row in left_np:

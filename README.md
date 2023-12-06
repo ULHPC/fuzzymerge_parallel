@@ -42,7 +42,14 @@ In this mode, fuzzymerge_parallel utilizes a Dask client, which can be configure
 
 ## Installation
 
+### Install from PyPi
+To download and install the fuzzymerge_parallel Python package from PyPi, run the following instruction:
+
+### Install from GitHub
 To download and install the fuzzymerge_parallel Python package from GitHub, you can follow these improved instructions:
+```bash
+    pip install fuzzymerge-parallel
+```
 
 To install FuzzyMergeParallel via pip from its GitHub repository, follow these steps:
 

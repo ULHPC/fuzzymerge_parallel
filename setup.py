@@ -4,7 +4,13 @@
 
 from setuptools import setup, find_packages
 
-with open('README.rst') as readme_file:
+# try:
+#     import pypandoc
+#     long_description = pypandoc.convert_file('README.md', 'rst')
+# except(IOError, ImportError):
+#     long_description = open('README.md').read()
+
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
@@ -14,6 +20,8 @@ requirements = ['Click>=7.0', 'Levenshtein>=0.21.0', 'nltk>=3.8.1',
                 'numpy>=1.23.5', 'pandas>=1.5.3', 'tqdm>=4.65.0', 'psutil==5.9.5']
 
 test_requirements = ['pytest>=7.4.1', ]
+
+
 
 setup(
     author="Oscar J. Castro-Lopez",
@@ -44,6 +52,7 @@ setup(
     },
     license="MIT license",
     long_description=readme + '\n\n' + history,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     keywords='fuzzymerge_parallel',
     name='fuzzymerge_parallel',
@@ -52,6 +61,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/ULHPC/fuzzymerge_parallel',
-    version='0.1.0',
+    version='1.0.0',
     zip_safe=False,
 )

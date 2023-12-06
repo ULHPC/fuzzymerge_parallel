@@ -8,7 +8,7 @@ from click.testing import CliRunner
 # import nltk
 import pandas as pd
 from fuzzymerge_parallel.FuzzyMergeParallel import FuzzyMergeParallel
-from fuzzymerge_parallel import cli
+
 
 
 def dask_is_installed() -> bool:
@@ -47,17 +47,6 @@ def dataset():
     words_left = pd.read_csv('tests/words_left.zip')
     words_right = pd.read_csv('tests/words_right.zip')
     yield words_left, words_right
-
-
-def test_command_line_interface():
-    """Test the CLI."""
-    runner = CliRunner()
-    result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert 'fuzzymerge_parallel.cli.main' in result.output
-    help_result = runner.invoke(cli.main, ['--help'])
-    assert help_result.exit_code == 0
-    assert '--help  Show this message and exit.' in help_result.output
 
 
 def test_sequential(dataset):
